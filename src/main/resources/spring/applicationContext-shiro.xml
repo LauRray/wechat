@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<!-- 1. 配置 SecurityManager! -->
+	<!-- <bean id="securityManager" -->
+	<!-- class="org.apache.shiro.web.mgt.DefaultWebSecurityManager"> -->
+	<!-- <property name="realms"> -->
+	<!-- <list> -->
+	<!-- <ref bean="jdbcRealm" /> -->
+	<!-- </list> -->
+	<!-- </property> -->
+
+	<!-- <property name="rememberMeManager.cookie.maxAge" value="10"></property> -->
+	<!-- </bean> -->
+
+
+
+	<!-- 3. 配置 Realm 3.1 直接配置实现了 org.apache.shiro.realm.Realm 接口的 bean -->
+	<!-- <bean id="jdbcRealm" class="cz.serch.system.ShiroRealmImpl"> -->
+	<!-- <property name="credentialsMatcher"> -->
+	<!-- <bean -->
+	<!-- class="org.apache.shiro.authc.credential.HashedCredentialsMatcher"> -->
+	<!-- <property name="hashAlgorithmName" value="MD5"></property> -->
+	<!-- <property name="hashIterations" value="1024"></property> -->
+	<!-- </bean> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+	<!-- 4. 配置 LifecycleBeanPostProcessor. 可以自定的来调用配置在 Spring IOC 容器中 shiro 
+		bean 的生命周期方法. -->
+	<!-- <bean id="lifecycleBeanPostProcessor" -->
+	<!-- class="org.apache.shiro.spring.LifecycleBeanPostProcessor" /> -->
+	<!-- 5. 启用 IOC 容器中使用 shiro 的注解. 但必须在配置了 LifecycleBeanPostProcessor 之后才可以使用. -->
+	<!-- <bean -->
+	<!-- class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" -->
+	<!-- depends-on="lifecycleBeanPostProcessor" /> -->
+	<!-- <bean -->
+	<!-- class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor"> -->
+	<!-- <property name="securityManager" ref="securityManager" /> -->
+	<!-- </bean> -->
+	<!-- 6. 配置 ShiroFilter. 6.1 id 必须和 web.xml 文件中配置的 DelegatingFilterProxy 
+		的 <filter-name> 一致. 若不一致, 则会抛出: NoSuchBeanDefinitionException. 因为 Shiro 会来 
+		IOC 容器中查找和 <filter-name> 名字对应的 filter bean. -->
+	<!--自定义LogoutFilter,退出 -->
+
+	<!-- Shiro过滤器 -->
+	<!-- <bean id="shiroFilter" -->
+	<!-- class="org.apache.shiro.spring.web.ShiroFilterFactoryBean"> -->
+	<!-- Shiro的核心安全接口,这个属性是必须的 -->
+	<!-- <property name="securityManager" ref="securityManager" /> -->
+	<!-- <property name="loginUrl" value="/login.htl" /> -->
+	<!-- <property name="successUrl" value="/index.htl" /> -->
+	<!-- <property name="unauthorizedUrl" value="/unauthorized.jsp"/> -->
+	<!-- Shiro连接约束配置,即过滤链的定义 -->
+	<!-- <property name="filterChainDefinitions"> -->
+	<!-- <value> -->
+	<!-- /wx/**=anon 不拦截微信请求 -->
+	<!-- /meupload/**=anon -->
+	<!-- /admin/userLogin.htl = anon不拦截登录请求 -->
+	<!-- /json.htl = anon不拦截登录请求 -->
+	<!-- /logout.htl=logout登出不拦截 -->
+	<!-- /regist.htl=anon注册不拦截 -->
+	<!-- /checkImg.htl=anon验证码不拦截 -->
+	<!-- /static/**=anon设置静态资源文件为游客可访问 -->
+	<!-- /** = authc -->
+	<!-- </value> -->
+	<!-- </property> -->
+	<!-- </bean> -->
+
+</beans>
