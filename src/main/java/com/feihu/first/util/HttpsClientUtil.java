@@ -148,14 +148,23 @@ public class HttpsClientUtil {
 		try {
 			HttpPost httpPost = new HttpPost(url);
 			List<NameValuePair> listNVP = new ArrayList<NameValuePair>();
+			JSONObject jsonParam = new JSONObject();
 			if (params != null) {
 				for (String key : params.keySet()) {
-					listNVP.add(new BasicNameValuePair(key, params.get(key).toString()));
+					jsonParam.put(key, params.get(key).toString());
+
 				}
 			}
 			httpPost.setHeader("content-type", "application/json");
-			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(listNVP, "UTF-8");
+			// UrlEncodedFormEntity entity = new UrlEncodedFormEntity(listNVP, "UTF-8");
 			logger.info("创建请求httpPost-URL={},params={}", url, listNVP);
+
+			// 红谷滩新闻资讯，channelId 77
+
+			StringEntity entity = new StringEntity(jsonParam.toString(), "utf-8");// 解决中文乱码问题
+			entity.setContentEncoding("UTF-8");
+			entity.setContentType("application/json");
+
 			httpPost.setEntity(entity);
 
 			httpClient = HttpsClientUtil.createSSLClientDefault();
