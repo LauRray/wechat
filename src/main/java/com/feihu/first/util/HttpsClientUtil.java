@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -142,14 +143,43 @@ public class HttpsClientUtil {
 			}
 		}
 	}
-	// public static void main(String[] args) throws Exception {
-	// Map<String, Object> map = new HashMap<>();
-	// map.put("authCode", "FX:123");
-	// map.put("userName", "jianghaida");
-	// map.put("pwd", "jianghaida");
-	//
-	// System.out.println(HttpsClientUtil.sendByHttp(map,
-	// "https://localhost:8010/postDoc"));
-	// ;
-	// }
+
+	public static Object sendJsonByHttp(Map<String, Object> params, String url) {
+		try {
+			HttpPost httpPost = new HttpPost(url);
+			List<NameValuePair> listNVP = new ArrayList<NameValuePair>();
+			if (params != null) {
+				for (String key : params.keySet()) {
+					listNVP.add(new BasicNameValuePair(key, params.get(key).toString()));
+				}
+			}
+			httpPost.setHeader("content-type", "application/json");
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(listNVP, "UTF-8");
+			logger.info("创建请求httpPost-URL={},params={}", url, listNVP);
+			httpPost.setEntity(entity);
+
+			httpClient = HttpsClientUtil.createSSLClientDefault();
+			httpResponse = httpClient.execute(httpPost);
+			HttpEntity httpEntity = httpResponse.getEntity();
+			if (httpEntity != null) {
+				String jsObject = EntityUtils.toString(httpEntity, "UTF-8");
+				return jsObject;
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				httpResponse.close();
+				httpClient.close();
+				logger.info("请求流关闭完成");
+			} catch (IOException e) {
+				logger.info("请求流关闭出错");
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

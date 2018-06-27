@@ -22,6 +22,23 @@ public class GeneralRquestMapper {
 
 	}
 
+	public static Boolean gebooleanPram(Map requestMap, String paramName, WhetherNull whetherNull) {
+		if (whetherNull == whetherNull.CanNULL) {
+
+			return Boolean.valueOf(String.valueOf(requestMap.get(paramName)));
+		} else {
+			String a = String.valueOf(requestMap.get(paramName));
+			if (a == null && a.trim().equals("")) {
+				// 参数为空的时候
+				throw new ParameterNotFondException("参数" + paramName + "为null或空");
+			} else {
+				return Boolean.valueOf(String.valueOf(requestMap.get(paramName)));
+			}
+
+		}
+
+	}
+
 	public static Integer getIntegerPram(Map requestMap, WhetherNull whetherNull) {
 		return null;
 	}
