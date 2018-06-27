@@ -33,6 +33,8 @@ import com.feihu.first.util.GeneralRquestMapper;
 import com.feihu.first.util.HttpsClientUtil;
 import com.feihu.first.util.Result;
 import com.feihu.first.util.WhetherNull;
+import com.feihu.first.util.wx.GetQRImge;
+import com.feihu.first.util.wx.HttpClient;
 import com.feihu.first.util.wx.WXCore;
 
 @Controller
@@ -182,13 +184,13 @@ public class WxloginController extends AbstractController {
 		return new Result(500, "成功", jo);
 	};
 
-	// 获取小程序码   可获得的path参数长   但是次数有限   
+	// 获取小程序码 可获得的path参数长 但是次数有限
 	@RequestMapping(value = "/getWechatQRCodeA")
 
 	@ResponseBody
 	public Result getWechatQRCodeFirst(@RequestBody Map requestMap) {
-		String taken=GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
-		String path=GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
+		String taken = GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
+		String path = GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
 		System.out.println("=========令牌==========");
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("appid", APPID);
@@ -199,69 +201,70 @@ public class WxloginController extends AbstractController {
 		 */
 		params.put("width", 430);
 		params.put("auto_color", true);
-//		params.put("line_color", {"r":"0","g":"0","b":"0"});
-		 
+		// params.put("line_color", {"r":"0","g":"0","b":"0"});
+
 		params.put("is_hyaline", false);
-		Object jo = HttpsClientUtil.sendByHttp(params,
-				"https://api.weixin.qq.com/wxa/getwxacode?access_token=" + APPID +taken);
+		// Object jo = HttpsClientUtil.sendJsonByHttp(params,
 
-		System.out.println(jo);
+		// "https://api.weixin.qq.com/wxa/getwxacode?access_token=" + APPID + taken);
+		String map = GetQRImge.getminiqrQrA(taken, params);
+		System.out.println(map);
 
-		return new Result(500, "成功", jo);
+		return new Result(500, "成功", map);
 	};
 
-	// 获取小程序码   path较短  可是次数无线
+	// 获取小程序码 path较短 可是次数无线
 	@RequestMapping(value = "/getWechatQRCodeB")
 
 	@ResponseBody
 	public Result getWechatQRCodeSec(@RequestBody Map requestMap) {
-		String taken=GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
-		String path=GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
+		String taken = GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
+		String path = GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
 		/*
 		 * 一些特殊的业务信息
 		 */
-		String scene=GeneralRquestMapper.getStringPram(requestMap, "scene", WhetherNull.NOTNULL);
+		String scene = GeneralRquestMapper.getStringPram(requestMap, "scene", WhetherNull.NOTNULL);
 		System.out.println("=========令牌==========");
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("appid", APPID);
 		params.put("secret", APPSECRET);
 		params.put("path", path);
 		params.put("scene", scene);
-		
+
 		/*
 		 * 一下无所为的
 		 */
 		params.put("width", 430);
 		params.put("auto_color", true);
-//		params.put("line_color", {"r":"0","g":"0","b":"0"});
-		 
+		// params.put("line_color", {"r":"0","g":"0","b":"0"});
+
 		params.put("is_hyaline", false);
 		Object jo = HttpsClientUtil.sendByHttp(params,
-				"https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN"+taken);
+				"https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=ACCESS_TOKEN" + taken);
 
 		System.out.println(jo);
 
 		return new Result(500, "成功", jo);
 	};
-	// 获取小程序码    适用于需要的码数量较少的业务场景
-		@RequestMapping(value = "/getWechatQRCodeC")
 
-		@ResponseBody
-		public Result getWechatQRCodeC(@RequestBody Map requestMap) {
-			String path=GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
-			String taken=GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
-			System.out.println("=========令牌==========");
-			Map<String, Object> params = new HashMap<String, Object>();
-			params.put("appid", APPID);
-			params.put("path", path);
-			params.put("secret", APPSECRET);
+	// 获取小程序码 适用于需要的码数量较少的业务场景
+	@RequestMapping(value = "/getWechatQRCodeC")
 
-			Object jo = HttpsClientUtil.sendByHttp(params,
-					"https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token="
-							+ taken);
+	@ResponseBody
+	public Result getWechatQRCodeC(@RequestBody Map requestMap) {
+		String path = GeneralRquestMapper.getStringPram(requestMap, "path", WhetherNull.NOTNULL);
+		String taken = GeneralRquestMapper.getStringPram(requestMap, "taken", WhetherNull.NOTNULL);
+		System.out.println("=========令牌==========");
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("appid", APPID);
+		params.put("path", path);
+		params.put("secret", APPSECRET);
 
-			System.out.println(jo);
+		Object jo = HttpsClientUtil.sendByHttp(params,
+				"https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=" + taken);
 
-			return new Result(500, "成功", jo);
-		};
+		System.out.println(jo);
+
+		return new Result(500, "成功", jo);
+	};
 }
